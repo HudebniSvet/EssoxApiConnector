@@ -42,7 +42,7 @@ namespace EssoxApiConnector
             return values;
         }
 
-        public async Task<string> GetCalculator(object model)
+        public async Task<EssoxCalculatorResponse> GetCalculator(EssoxCalculator model)
         {
             string token = (await this.GetToken()).access_token;
             var json = JsonSerializer.Serialize(model);// new { price = 10_000, productId = 0 };
@@ -57,7 +57,7 @@ namespace EssoxApiConnector
 
             var values = JsonSerializer.Deserialize<EssoxCalculatorResponse>(result);
 
-            return values.redirectionUrl;
+            return values;
         }
 
         public async Task<EssoxProposalResponse> GetProposal(EssoxProposal model)
