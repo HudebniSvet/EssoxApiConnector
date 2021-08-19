@@ -9,6 +9,12 @@ namespace EssoxApiConnector.ConnectionModels
 
     public class TestApiData : AbstractApiData
     {
+        public TestApiData(string user, string pw)
+        {
+            base.User = user;
+            base.Password = pw;
+        }
+
         public override string HostUrl { get; set; } = "testapi.essox.cz";
         public override string TokenUrl { get; set; } = "https://testapi.essox.cz/token";
 

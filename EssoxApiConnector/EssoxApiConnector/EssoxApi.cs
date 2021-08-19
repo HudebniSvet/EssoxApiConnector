@@ -22,7 +22,7 @@ namespace EssoxApiConnector
             this.apiData = apiData;
         }
 
-        internal async Task<EssoxToken> GetToken()
+        public async Task<EssoxToken> GetToken()
         {
             var data = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
 
@@ -42,7 +42,7 @@ namespace EssoxApiConnector
             return values;
         }
 
-        internal async Task<string> GetCalculator(object model)
+        public async Task<string> GetCalculator(object model)
         {
             string token = (await this.GetToken()).access_token;
             var json = JsonSerializer.Serialize(model);// new { price = 10_000, productId = 0 };
@@ -60,7 +60,7 @@ namespace EssoxApiConnector
             return values.redirectionUrl;
         }
 
-        internal async Task<EssoxProposalResponse> GetProposal(EssoxProposal model)
+        public async Task<EssoxProposalResponse> GetProposal(EssoxProposal model)
         {
             string token = (await this.GetToken()).access_token;
 
@@ -81,8 +81,6 @@ namespace EssoxApiConnector
 
             return values;
         }
-
-
 
         public async Task<EssoxStatusResponse> GetStatus(int contractId)
         {

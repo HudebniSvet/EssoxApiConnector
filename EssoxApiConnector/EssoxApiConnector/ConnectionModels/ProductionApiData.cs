@@ -11,6 +11,12 @@ namespace EssoxApiConnector.ConnectionModels
     /// </summary>
     public class ProductionApiData : AbstractApiData
     {
+        public ProductionApiData(string user, string pw)
+        {
+            base.User = user;
+            base.Password = pw;
+        }
+
         public override string HostUrl { get; set; } = "api.essox.cz";
         public override string TokenUrl { get; set; } = "https://api.essox.cz/token";
 
