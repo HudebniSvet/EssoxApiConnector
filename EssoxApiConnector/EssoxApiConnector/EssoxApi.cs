@@ -11,10 +11,13 @@ using System.Threading.Tasks;
 
 namespace EssoxApiConnector
 {
+    /// <summary> Hlavní třída pro volání API metod </summary>
     public class EssoxApi : IDisposable
     {
         private HttpClient client;
         private AbstractApiData apiData;
+
+        public string LastResultString { get; set; }
 
         public EssoxApi(AbstractApiData apiData)
         {
@@ -35,9 +38,9 @@ namespace EssoxApiConnector
 
             var response = await client.PostAsync(apiData.TokenUrl, data);
 
-            string result = await response.Content.ReadAsStringAsync();
+            LastResultString = await response.Content.ReadAsStringAsync();
 
-            var values = JsonSerializer.Deserialize<EssoxToken>(result);
+            var values = JsonSerializer.Deserialize<EssoxToken>(LastResultString);
             //var val = values.GetValueOrDefault("access_token");
             return values;
         }
@@ -53,9 +56,9 @@ namespace EssoxApiConnector
 
             var response = await client.PostAsync(apiData.CalculatorRequestUrl, data);
 
-            string result = await response.Content.ReadAsStringAsync();
+            LastResultString = await response.Content.ReadAsStringAsync();
 
-            var values = JsonSerializer.Deserialize<EssoxCalculatorResponse>(result);
+            var values = JsonSerializer.Deserialize<EssoxCalculatorResponse>(LastResultString);
 
             return values;
         }
@@ -72,9 +75,9 @@ namespace EssoxApiConnector
 
             var response = await client.PostAsync(apiData.ProposalRequestUrl, data);
 
-            string result = await response.Content.ReadAsStringAsync();
+            LastResultString  = await response.Content.ReadAsStringAsync();
 
-            var values = JsonSerializer.Deserialize<EssoxProposalResponse>(result);
+            var values = JsonSerializer.Deserialize<EssoxProposalResponse>(LastResultString);
 
             //Thread.Sleep(10000);
             var status = await GetStatus(values.contractId, token);
@@ -95,9 +98,9 @@ namespace EssoxApiConnector
 
             var response = await client.GetAsync(apiData.StatusRequestUrl + "?ContractId=" + contractId);
 
-            string result = await response.Content.ReadAsStringAsync();
+            LastResultString = await response.Content.ReadAsStringAsync();
 
-            var values = JsonSerializer.Deserialize<EssoxStatusResponse>(result);
+            var values = JsonSerializer.Deserialize<EssoxStatusResponse>(LastResultString);
 
             return values;
         }
