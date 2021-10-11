@@ -7,8 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EssoxApiConnector", "EssoxA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{F03CFB7F-EA83-4C0A-B20D-7D74790E46FE}"
 	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
 Global

@@ -32,7 +32,7 @@ namespace EssoxApiConnector.Models.Response
         public string email { get; set; }
         public int contractStatusId { get; set; }
         public string contractStatus { get; set; }
-        public int authorizationResultId { get; set; }
+        public int? authorizationResultId { get; set; }
         public string authorizationResult { get; set; }
     }
 

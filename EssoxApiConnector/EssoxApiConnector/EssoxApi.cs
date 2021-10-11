@@ -1,12 +1,8 @@
 ﻿using EssoxApiConnector.ConnectionModels;
+using EssoxApiConnector.Logic;
 using EssoxApiConnector.Models.Request;
 using EssoxApiConnector.Models.Response;
 using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace EssoxApiConnector
@@ -14,110 +10,55 @@ namespace EssoxApiConnector
     /// <summary> Hlavní třída pro volání API metod </summary>
     public class EssoxApi : IDisposable
     {
-        private HttpClient client;
-        private AbstractApiData apiData;
+        private EssoxLogic essoxLogic;
 
-        public string LastResultString { get; set; }
+        public string LastResultString { get { return essoxLogic.LastResultString; } }
 
+        /// <param name="apiData">Informace </param>
         public EssoxApi(AbstractApiData apiData)
         {
-            this.client = new HttpClient();
-            this.apiData = apiData;
+            this.essoxLogic = new EssoxLogic(apiData);
         }
 
         public async Task<EssoxToken> GetToken()
         {
-            var data = new StringContent("grant_type=client_credentials", Encoding.UTF8, "application/x-www-form-urlencoded");
+            var output = await essoxLogic.GetToken();
 
-            string Authorization = Tools.Base64Encode(apiData.AuthorizationString);
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Authorization);
-            client.DefaultRequestHeaders.Host = apiData.HostUrl;
-
-            var requestMessage = client.DefaultRequestHeaders.ToString();
-
-            var response = await client.PostAsync(apiData.TokenUrl, data);
-
-            LastResultString = await response.Content.ReadAsStringAsync();
-
-            var values = JsonSerializer.Deserialize<EssoxToken>(LastResultString);
-            //var val = values.GetValueOrDefault("access_token");
-            return values;
+            return output;
         }
 
         public async Task<EssoxCalculatorResponse> GetCalculator(EssoxCalculator model)
         {
-            string token = (await this.GetToken()).access_token;
-            var json = JsonSerializer.Serialize(model);// new { price = 10_000, productId = 0 };
-            var data = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
+            var output = await essoxLogic.GetCalculator(model);
 
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var response = await client.PostAsync(apiData.CalculatorRequestUrl, data);
-
-            LastResultString = await response.Content.ReadAsStringAsync();
-
-            var values = JsonSerializer.Deserialize<EssoxCalculatorResponse>(LastResultString);
-
-            return values;
+            return output;
         }
 
         public async Task<EssoxProposalResponse> GetProposal(EssoxProposal model)
         {
-            string token = (await this.GetToken()).access_token;
+            var output = await essoxLogic.GetProposal(model);
 
-            string json = JsonSerializer.Serialize(model);
-            var data = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
-
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var response = await client.PostAsync(apiData.ProposalRequestUrl, data);
-
-            LastResultString = await response.Content.ReadAsStringAsync();
-
-            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                //var errorResponse = JsonSerializer.Deserialize<EssoxErrorResponse>(LastResultString);
-            }
-            else
-            {
-
-            }
-            var values = JsonSerializer.Deserialize<EssoxProposalResponse>(LastResultString);
-
-            //Thread.Sleep(10000);
-            //Nelze volat status ihned
-            //var status = await GetStatus(values.contractId, token);
-
-            return values;
+            return output;
         }
 
         public async Task<EssoxStatusResponse> GetStatus(int contractId)
         {
-            string token = (await this.GetToken()).access_token;
-            return await GetStatus(contractId, token);
+            var output = await essoxLogic.GetStatus(contractId);
+
+            return output;
         }
 
         public async Task<EssoxStatusResponse> GetStatus(int contractId, string token)
         {
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var output = await essoxLogic.GetStatus(contractId, token);
 
-            var response = await client.GetAsync(apiData.StatusRequestUrl + "?ContractId=" + contractId);
-
-            LastResultString = await response.Content.ReadAsStringAsync();
-
-            var values = JsonSerializer.Deserialize<EssoxStatusResponse>(LastResultString);
-
-            return values;
+            return output;
         }
 
 
         public void Dispose()
         {
-            client.Dispose();
+            essoxLogic.Dispose();
         }
     }
 }
