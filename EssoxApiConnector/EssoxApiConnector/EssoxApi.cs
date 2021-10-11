@@ -75,12 +75,21 @@ namespace EssoxApiConnector
 
             var response = await client.PostAsync(apiData.ProposalRequestUrl, data);
 
-            LastResultString  = await response.Content.ReadAsStringAsync();
+            LastResultString = await response.Content.ReadAsStringAsync();
 
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                //var errorResponse = JsonSerializer.Deserialize<EssoxErrorResponse>(LastResultString);
+            }
+            else
+            {
+
+            }
             var values = JsonSerializer.Deserialize<EssoxProposalResponse>(LastResultString);
 
             //Thread.Sleep(10000);
-            var status = await GetStatus(values.contractId, token);
+            //Nelze volat status ihned
+            //var status = await GetStatus(values.contractId, token);
 
             return values;
         }
