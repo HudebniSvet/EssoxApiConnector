@@ -39,6 +39,7 @@ namespace EssoxApiConnector.Logic
             var requestMessage = client.DefaultRequestHeaders.ToString();
 
             var response = await client.PostAsync(apiData.TokenUrl, data);
+            response.EnsureSuccessStatusCode();
 
             LastResultString = await response.Content.ReadAsStringAsync();
 
@@ -57,6 +58,7 @@ namespace EssoxApiConnector.Logic
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await client.PostAsync(apiData.CalculatorRequestUrl, data);
+            response.EnsureSuccessStatusCode();
 
             LastResultString = await response.Content.ReadAsStringAsync();
 
@@ -76,6 +78,7 @@ namespace EssoxApiConnector.Logic
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await client.PostAsync(apiData.ProposalRequestUrl, data);
+            response.EnsureSuccessStatusCode();
 
             LastResultString = await response.Content.ReadAsStringAsync();
 
@@ -108,6 +111,7 @@ namespace EssoxApiConnector.Logic
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await client.GetAsync(apiData.StatusRequestUrl + "?ContractId=" + contractId);
+            response.EnsureSuccessStatusCode();
 
             LastResultString = await response.Content.ReadAsStringAsync();
 
